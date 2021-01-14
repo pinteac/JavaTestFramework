@@ -5,13 +5,9 @@ import configuration.WebDriverMain;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.testng.Assert;
 import utils.WebElementsUtils;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class DetailsPage extends BasePage {
 
@@ -35,7 +31,6 @@ public class DetailsPage extends BasePage {
     private void waitForPageElements() {
         List<WebElement> webElementList = Arrays.asList(propertyPictures,showAllAmenitiesButton);
         wait.generalWaitForElements(webElementList);
-       // wait.generalWaitForElements(elementsToWait);
     }
 
     // Selectors
@@ -52,7 +47,6 @@ public class DetailsPage extends BasePage {
 
     public final String FACILITIES = "facilities";
     public final String POOL = "Pool";
-    List<WebElement> result = new ArrayList<>();
 
     public void checkIfPoolIsUnderFacilitiesInAmenities(List<WebElement> result)
     {

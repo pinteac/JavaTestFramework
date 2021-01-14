@@ -6,7 +6,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import utils.SearchCheck;
 import utils.WebElementsUtils;
-
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -71,17 +70,16 @@ public class HeaderPage extends BasePage{
     @FindBy(xpath = "(//div[@class='_uh2dzp'])[1]")
     public static WebElement selectCheckIn;
 
-    @FindBy(xpath = "(//div[@class='_1665lvv'])[1]")
+    @FindBy(xpath = "(//span[@class='_5afswi'])[1]")
     public static WebElement nrOFADULTS;
 
-    @FindBy(xpath = "(//div[@class='_1665lvv'])[2]")
+    @FindBy(xpath = "(//span[@class='_5afswi'])[2]")
     public static WebElement nrOFCHILDS;
-
-    private LocalDate keepCheckInDate = null;
 
     private static By suggestedCityBy = By.className("_1tfpcfm");
     private static By travelSuggestionsBy = By.className("_3uceys");
 
+    private LocalDate keepCheckInDate = null;
 
     // Methods
     public void initializePageElements(WebDriverMain webDriverMain)
@@ -138,10 +136,32 @@ public class HeaderPage extends BasePage{
 
     public void saveSearchFilters(SearchCheck savedSearch)
     {
-        savedSearch.searchedLocation = locationSearchInput.getAttribute("value").substring(0,4);
-        savedSearch.checkOutDate = checkoutDate.getText().substring(4,6);
+        savedSearch.searchedLocation = extractLocation(locationSearchInput);
+        savedSearch.checkOutDate = extractCheckoutDate(checkinDate,checkoutDate);
         savedSearch.checkInDate = checkinDate.getText() +" – "+savedSearch.checkOutDate;
-        savedSearch.numberOfGuests = (Integer.valueOf(nrOFADULTS.getText().substring(0,1)) + Integer.valueOf(nrOFCHILDS.getText().substring(0,1))) + " guests";
+        savedSearch.numberOfGuests = (Integer.valueOf(extractNumber(nrOFADULTS)) + Integer.valueOf(extractNumber(nrOFCHILDS)) + " guests");
+    }
+
+    private String extractLocation(WebElement webElement)
+    {
+        String[] strings = webElement.getAttribute(WebElementsUtils.VALUE).split(",",2);
+        return strings[0];
+    }
+
+    private String extractCheckoutDate(WebElement checkinDate, WebElement checkoutDate)
+    {
+        String checkinMonth, checkoutMonth;
+        checkoutMonth = checkoutDate.getText().replaceAll("[^a-zA-Z]", "");
+        checkinMonth = checkinDate.getText().replaceAll("[^a-zA-Z]", "");
+        if(checkinMonth.equals(checkoutMonth))
+            return checkoutDate.getText().replaceAll("[^0-9]","");
+        else
+            return checkoutDate.getText();
+    }
+
+    private String extractNumber(WebElement webElement)
+    {
+        return webElement.getText().replaceAll("[^0-9]","");
     }
 
     public void waitForCheckDateFilter()
@@ -155,6 +175,8 @@ public class HeaderPage extends BasePage{
         while(!monthAndYear.getText().equalsIgnoreCase(yearMonth))
         {
             nextMonthButton.click();
+            wait.waitForElementToBeVisible(monthAndYear);
+            waitForHeaderElements();
         }
 
         int day = checkDate.getDayOfMonth();

@@ -128,13 +128,13 @@ public class SearchPage extends BasePage{
 
     public String getNameOfHoveredProperty()
     {
-        WebElement link = property.findElement(By.tagName("a"));
+        WebElement link = property.findElement(By.tagName(WebElementsUtils.TAG.LINK));
         return WebElementsUtils.getAttribute(link,WebElementsUtils.ARIA_LABEL);
     }
 
     public WebElement getPropertyButton(String property)
     {
-        List<WebElement> ListOfButtons = allMapElements.findElements(By.tagName("button"));
+        List<WebElement> ListOfButtons = allMapElements.findElements(By.tagName(WebElementsUtils.TAG.BUTTON));
         for  (WebElement button: ListOfButtons
              ) {
             if(button.getAttribute(WebElementsUtils.ARIA_LABEL).contains(property))
@@ -145,7 +145,7 @@ public class SearchPage extends BasePage{
 
     public String getTheColorOfThePropertyButtonOnTheMap(WebElement propertyButton)
     {
-        List<WebElement> webElement = propertyButton.findElements(By.tagName("div"));
+        List<WebElement> webElement = propertyButton.findElements(By.tagName(WebElementsUtils.TAG.DIV));
         for (WebElement web : webElement
             ) {
             String css = web.getAttribute("style");

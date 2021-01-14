@@ -16,6 +16,7 @@ import java.io.IOException;
 
 public class HookBase extends TestBase {
 
+    private static final String SCREENSHOT_PATH = "SCREENSHOT_PATH";
     @Before
     public void initDriver()
     {
@@ -27,8 +28,6 @@ public class HookBase extends TestBase {
         }
         else
             startUp = false;
-        // Open Application
-        //TestBase.driver.startApplicationURL();
     }
 
     @After
@@ -40,7 +39,7 @@ public class HookBase extends TestBase {
             File screenshot = ((TakesScreenshot) WebDriverMain.getWebDriver()).getScreenshotAs(OutputType.FILE);
             try
             {
-                FileUtils.getFileUtils().copyFile(screenshot,new File("C:\\Users\\c.pintea\\Desktop\\SectorLabs Challenge\\src\\test\\java\\testcases\\screenshots\\" +scenarioName +".png"));
+                FileUtils.getFileUtils().copyFile(screenshot,new File(System.getenv(SCREENSHOT_PATH) + scenarioName +".png"));
             }catch (IOException e)
             {
                 e.printStackTrace();

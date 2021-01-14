@@ -11,6 +11,11 @@ public class WebElementsUtils {
 
     public static final String ATTRIBUTE = "data-testid";
     public static final String ARIA_LABEL = "aria-label";
+    public static final String VALUE = "value";
+
+    public static class TAG{
+        public static String LINK = "a", BUTTON = "button", DIV="div";
+    }
 
 
     private WebElementsUtils(){}
