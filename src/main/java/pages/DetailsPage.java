@@ -5,6 +5,7 @@ import configuration.WebDriverMain;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import utils.PropertyCheck;
 import utils.WebElementsUtils;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +44,23 @@ public class DetailsPage extends BasePage {
     @FindBy(xpath = "(//div[@class='_pog3hg'])[1]")
     public static WebElement propertyPictures;
 
+    @FindBy(css = "div._mbmcsn")
+    public static WebElement propertyTitle;
+
+    @FindBy(xpath = "(//div[@class='_tqmy57'])[2]")
+    public static List<WebElement> propertyDetails;
+
+    @FindBy(css = "div._ymq6as")
+    public static WebElement price_per_night;
+
+    public static By nightPrice = By.className("_pgfqnw");
+
+
+    @FindBy(xpath = "(//button[@class='_z75ovys'])[1]")
+    public static WebElement rating;
+
+    public static By ratingNumber = By.className("_1jpdmc0");
+
     private static By className = By.className("_1dotkqq");
 
     public final String FACILITIES = "facilities";
@@ -68,4 +86,13 @@ public class DetailsPage extends BasePage {
             }
         }
     }
+
+    public void getPropertyDetails(PropertyCheck propertyCheck)
+    {
+        propertyCheck.PROPERTY_NAME = propertyTitle.getText();
+        propertyCheck.PROPERTY_RATING = rating.findElement(ratingNumber).getText();
+        propertyCheck.PROPERTY_PRICE_PER_NIGHT = price_per_night.findElement(nightPrice).getText();
+    }
+
+
 }

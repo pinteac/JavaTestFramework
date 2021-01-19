@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 
 public class PropertyCheck {
 
-    private PropertyCheck(){}
+    public PropertyCheck(){}
 
     private static PropertyCheck instance = null;
 

@@ -112,4 +112,24 @@ public class WaitForMain {
     {
         WebDriverMain.driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
     }
+
+    public void waitForElementToChange(WebElement webElement)
+    {
+        if(wait != null)
+        {
+            String elText = webElement.getText();
+            try
+            {
+                Object dumping = wait.until(new Function<WebDriver, Object>() {
+                    @Override
+                    public Object apply(WebDriver driver) {
+                        return webElement.getText() != elText;
+                    }
+                });
+            }catch(Exception e)
+            {
+                //do nothing
+            }
+        }
+    }
 }

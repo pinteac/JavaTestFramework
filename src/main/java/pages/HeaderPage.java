@@ -175,8 +175,10 @@ public class HeaderPage extends BasePage{
         while(!monthAndYear.getText().equalsIgnoreCase(yearMonth))
         {
             nextMonthButton.click();
-            wait.waitForElementToBeVisible(monthAndYear);
-            waitForHeaderElements();
+            wait.waitForElementToChange(monthAndYear);
+
+           // wait.waitForElementToBeVisible(monthAndYear);
+            //waitForHeaderElements();
         }
 
         int day = checkDate.getDayOfMonth();

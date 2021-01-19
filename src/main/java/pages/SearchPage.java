@@ -3,6 +3,7 @@ package pages;
 import configuration.WaitForMain;
 import configuration.WebDriverMain;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import utils.WebElementsUtils;
@@ -44,8 +45,12 @@ public class SearchPage extends BasePage{
     @FindBy(css = "div._8ssblpx")
     public List<WebElement> accommodationList;
 
-    @FindBy(xpath = "(//div[@aria-label='Map'])")
+    //@FindBy(xpath = "(//div[@aria-label='Map'])")
+    @FindBy(css = "aside._1dagk84")
     public static WebElement allMapElements;
+
+    @FindBy(css = "div._1q6k59c")
+    public static WebElement linkOfThePropertyOnTheMap;
 
     public static By roomDetails = By.cssSelector("div._kqh46o");
     private static By property_name = By.cssSelector("div._bzh5lkq");
@@ -57,6 +62,7 @@ public class SearchPage extends BasePage{
     private static By property_map_name = By.cssSelector("div._1isz8pdq");
     private static By property_map_type = By.cssSelector("ol._194e2vt2");
     private static By property_map_rating = By.cssSelector("div._1c50qo6");
+    private static By propertyPrice = By.className("_olc9rf0");
 
     public static WebElement property;
     public static WebElement propertyDetails;
@@ -72,10 +78,17 @@ public class SearchPage extends BasePage{
         waitForPageElements();
     }
 
+    public void initPage(WebDriverMain webDriverMain)
+    {
+        webDriverMain.initElements(this);
+        wait.generalWaitForElements(accommodationList);
+    }
+
     private void waitForPageElements()
     {
-        List<WebElement> webElementList = Arrays.asList(moreFiltersButton, allMapElements);
+        List<WebElement> webElementList = Arrays.asList(allMapElements, moreFiltersButton);
         wait.generalWaitForElements(webElementList);
+        wait.generalWaitForElements(accommodationList);
     }
 
     public void selectMoreFilters()
@@ -123,6 +136,13 @@ public class SearchPage extends BasePage{
     public void hoverOverElement(int elementNumber)
     {
         property = accommodationList.get(elementNumber-1);
+        WebElementsUtils.hoverOverElement(property);
+    }
+
+    public void hoverOverElementWithScroll(int elementNumber)
+    {
+        property = accommodationList.get(elementNumber-1);
+        WebElementsUtils.scrollIntoView(property);
         WebElementsUtils.hoverOverElement(property);
     }
 
@@ -190,5 +210,50 @@ public class SearchPage extends BasePage{
 
         propertyCheckMap.PROPERTY_RATING = propertyMapDetails.findElement(property_map_rating).getText();
         propertyCheckMap.PROPERTY_PRICE_PER_NIGHT = propertyMapDetails.findElement(property_price).getText();
+    }
+
+    public int getPropertyIndexWithTheLowestPrice()
+    {
+        wait.generalWaitForElements(accommodationList);
+        //wait.waitForElementTobeLocated(propertyPrice);
+        int min = Integer.MAX_VALUE, index = 0, count = 0;
+        String util;
+        for (WebElement el: accommodationList
+             ) {
+            util = el.findElement(propertyPrice).getText();
+            count++;
+            if(Integer.valueOf(getPriceOfPropertyDisplayedInSearch(util)) < min)
+            {
+                min = Integer.valueOf(getPriceOfPropertyDisplayedInSearch(util));
+                index = count;
+            }
+
+        }
+        return index;
+    }
+
+    private String getPriceOfPropertyDisplayedInSearch(String string)
+    {
+        String[] strings = string.split(" ");
+        return strings[1];
+    }
+
+    public void clickOnTheMapPropertyAndOpenDetailsPage()
+    {
+        openNewTab(linkOfThePropertyOnTheMap);
+    }
+
+    public String getPropertyRatingDisplayedInSearch(WebElement webElement)
+    {
+        String[] strings = webElement.findElement(property_rating).getText().split("/n",2);
+        return strings[0];
+    }
+    public void getPropertyDetailsFromSearchResult(PropertyCheck propertyCheck)
+    {
+        propertyDetails = property.findElement(pagePropertyDetails);
+
+        propertyCheck.PROPERTY_NAME = propertyDetails.findElement(property_name).getText();
+        propertyCheck.PROPERTY_RATING = getPropertyRatingDisplayedInSearch(propertyDetails);
+        propertyCheck.PROPERTY_PRICE_PER_NIGHT = property.findElement(propertyPrice).getText();
     }
 }
